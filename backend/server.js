@@ -1,5 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
@@ -126,6 +128,24 @@ app.get('/api/debug/routes', (req, res) => {
     res.status(500).json({ error: 'Failed to enumerate routes' });
   }
 });
+// Serve frontend static files when available (single-service deployment)
+try {
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+  const frontendDist = path.join(__dirname, '..', 'frontend', 'dist');
+  if (fs.existsSync(frontendDist)) {
+    // Serve static build
+    app.use(express.static(frontendDist));
+
+    // Return index.html for any non-API route (client-side routing)
+    app.get('*', (req, res, next) => {
+      if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) return next();
+      res.sendFile(path.join(frontendDist, 'index.html'));
+    });
+  }
+} catch (err) {
+  console.error('Error setting up frontend static serving:', err);
+}
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {

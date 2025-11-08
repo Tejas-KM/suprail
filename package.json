@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "node backend/server.js",
-    "postinstall": "npm --prefix frontend ci --no-audit --progress=false",
+    "postinstall": "npm --prefix frontend ci --no-audit --progress=false && npm --prefix frontend run build",
     "build": "npm --prefix frontend run build"
   }
 }
