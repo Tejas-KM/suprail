@@ -1,4 +1,5 @@
 {
+  "main": "backend/server.js",
   "dependencies": {
     "adm-zip": "^0.5.16",
     "axios": "^1.12.2",
@@ -8,6 +9,7 @@
     "xlsx": "^0.18.5"
   },
   "scripts": {
+    "start": "node backend/server.js",
     "postinstall": "npm --prefix frontend ci --no-audit --progress=false",
     "build": "npm --prefix frontend run build"
   }
